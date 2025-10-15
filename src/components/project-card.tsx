@@ -1,3 +1,7 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -40,6 +44,10 @@ export function ProjectCard({
   links,
   className,
 }: Props) {
+  const [selectedFileName, setSelectedFileName] = React.useState<string | null>(
+    null,
+  );
+  const inputId = React.useId();
   return (
     <Card
       className={
@@ -98,16 +106,39 @@ export function ProjectCard({
         )}
       </CardContent>
       <CardFooter className="px-2 pb-2">
-        {links && links.length > 0 && (
-          <div className="flex flex-row flex-wrap items-start gap-1">
-            {links?.map((link, idx) => (
-              <Link href={link?.href} key={idx} target="_blank">
-                <Badge key={idx} className="flex gap-2 px-2 py-1 text-[10px]">
-                  {link.icon}
-                  {link.type}
-                </Badge>
-              </Link>
-            ))}
+        <div className="flex w-full flex-row flex-wrap items-start gap-1">
+          <label htmlFor={inputId}>
+            <Button variant="outline" size="sm" type="button">
+              Add file
+            </Button>
+          </label>
+          <input
+            id={inputId}
+            type="file"
+            className="hidden"
+            onChange={(e) =>
+              setSelectedFileName(e.target.files?.[0]?.name ?? null)
+            }
+          />
+          {links && links.length > 0 && (
+            <div className="flex flex-row flex-wrap items-start gap-1">
+              {links?.map((link, idx) => (
+                <Link href={link?.href} key={idx} target="_blank">
+                  <Badge
+                    key={idx}
+                    className="flex gap-2 px-2 py-1 text-[10px]"
+                  >
+                    {link.icon}
+                    {link.type}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+        {selectedFileName && (
+          <div className="mt-1 w-full text-[10px] text-muted-foreground">
+            Selected: {selectedFileName}
           </div>
         )}
       </CardFooter>
